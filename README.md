@@ -9,7 +9,7 @@ host-page events the widget fires.
 1. **GA4**: create a GA4 property with a *web* data stream for the Pages URL (see below) and copy its
    Measurement ID (`G-…`).
 2. **Agent**: in Proposaly (test environment), open the agent → Channels → Web chat, add the Pages
-   domain to the allowed domains (`adcore-inc.github.io`), set the agent live, and copy the
+   domain to the allowed domains (`idris-ad.github.io`), set the agent live, and copy the
    `data-bot-id` value from the embed snippet.
 3. Edit `index.html` — the two constants at the top:
    - `GA_MEASUREMENT_ID`
