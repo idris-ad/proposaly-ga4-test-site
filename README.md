@@ -14,7 +14,7 @@ host-page events the widget fires.
    `data-bot-id` value from the embed snippet.
 3. Edit `index.html` — the constants at the top:
    - `GA_MEASUREMENT_ID`
-   - `PROPOSALY_BOT_ID` (currently the test agent `6zEIgy…`)
+   - `PROPOSALY_BOT_ID` (currently the test agent `wcEeLN…`)
    (`PROPOSALY_WIDGET_SRC` points at the test CDN; switch to `cdn.proposaly.io` for production.)
 4. Commit to `main`; GitHub Pages redeploys in about a minute.
 
