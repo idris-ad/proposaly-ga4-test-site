@@ -3,129 +3,286 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
   <meta name="robots" content="noindex">
-  <title>Proposaly GA4 test site</title>
+  <title>Brightwell Home Studio — Interior design &amp; renovation</title>
+  <meta name="description" content="Brightwell Home Studio designs and renovates kitchens, living spaces and whole homes. Book a free consultation.">
 
-  <!-- ===== 1. Fill these two values ===== -->
+  <!-- ===== Configuration ===== -->
   <script>
-    // GA4 → Admin → Data streams → your web stream → Measurement ID (G-XXXXXXXXXX)
+    // GA4 → Admin → Data streams → web stream → Measurement ID (G-XXXXXXXXXX)
     window.GA_MEASUREMENT_ID = 'G-XXXXXXXXXX';
-    // Proposaly → agent → Channels → Web chat → embed snippet → data-bot-id
-    window.PROPOSALY_BOT_ID = 'PASTE_EMBED_TOKEN';
-    // test-cdn = test environment; use https://cdn.proposaly.io/bot/v1/widget.js for production
+    // Proposaly agent embed token (data-bot-id from Channels → Web chat)
+    window.PROPOSALY_BOT_ID = '6zEIgyA8XzJxOwvJk4rJA_HVFvDvq28wKpa8U9OPWbg';
+    // Test environment CDN; production is https://cdn.proposaly.io/bot/v1/widget.js
     window.PROPOSALY_WIDGET_SRC = 'https://test-cdn.proposaly.io/bot/v1/widget.js';
   </script>
 
-  <!-- ===== 2. Google Analytics 4 (gtag) — sets the _ga / _ga_<stream> cookies the widget reads ===== -->
+  <!-- ===== Google Analytics 4 (sets the _ga cookies the widget reads for Connect GA4) ===== -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){ dataLayer.push(arguments); }
-    if (/^G-[A-Z0-9]+$/.test(window.GA_MEASUREMENT_ID)) {
-      var s = document.createElement('script');
-      s.async = true;
-      s.src = 'https://www.googletagmanager.com/gtag/js?id=' + window.GA_MEASUREMENT_ID;
-      document.head.appendChild(s);
+    if (/^G-[A-Z0-9]+$/.test(window.GA_MEASUREMENT_ID) && window.GA_MEASUREMENT_ID !== 'G-XXXXXXXXXX') {
+      var gs = document.createElement('script');
+      gs.async = true;
+      gs.src = 'https://www.googletagmanager.com/gtag/js?id=' + window.GA_MEASUREMENT_ID;
+      document.head.appendChild(gs);
       gtag('js', new Date());
       gtag('config', window.GA_MEASUREMENT_ID);
     }
   </script>
 
-  <style>
-    :root { --bg: #0b1024; --card: #141b36; --text: #e9ecf5; --muted: #9aa1b9; --ok: #4ade80; --warn: #fbbf24; }
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background: var(--bg); color: var(--text); }
-    main { max-width: 760px; margin: 0 auto; padding: 48px 16px 120px; }
-    h1 { font-size: 28px; margin: 0 0 8px; }
-    p { line-height: 1.5; color: var(--muted); }
-    .card { background: var(--card); border: 1px solid rgba(255,255,255,.12); border-radius: 12px; padding: 16px 18px; margin-top: 16px; }
-    .card h2 { font-size: 15px; margin: 0 0 10px; }
-    .row { display: flex; gap: 10px; align-items: center; font-size: 14px; margin: 6px 0; }
-    .dot { width: 9px; height: 9px; border-radius: 50%; background: #6b7080; flex: none; }
-    .dot.ok { background: var(--ok); } .dot.warn { background: var(--warn); }
-    code { font-family: ui-monospace, Menlo, monospace; font-size: 13px; background: rgba(255,255,255,.08); padding: 2px 6px; border-radius: 4px; }
-    #log { font-family: ui-monospace, Menlo, monospace; font-size: 12px; white-space: pre-wrap; max-height: 320px; overflow: auto; margin: 0; color: var(--text); }
-    #log:empty::before { content: 'No events yet — open the chat and send a message.'; color: var(--muted); }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231f3a34'/%3E%3Cpath d='M9 22V12l7-4 7 4v10h-5v-6h-4v6z' fill='%23f3ede4'/%3E%3C/svg%3E">
 </head>
 <body>
-  <main>
-    <h1>Proposaly GA4 test site</h1>
-    <p>A plain page that hosts the Proposaly web agent and Google Analytics 4. Use it to test
-       <strong>Connect GA4</strong> (server-side events) and the host-page events
-       <code>proposaly_conversation</code> / <code>proposaly_lead</code>.</p>
+  <a class="skip" href="#main">Skip to content</a>
 
-    <div class="card">
-      <h2>Status</h2>
-      <div class="row"><span class="dot" id="st-ga"></span><span id="st-ga-text">Google Analytics</span></div>
-      <div class="row"><span class="dot" id="st-bot"></span><span id="st-bot-text">Proposaly widget</span></div>
-      <div class="row"><span class="dot" id="st-cookie"></span><span id="st-cookie-text">GA client id (_ga cookie)</span></div>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="Brightwell Home Studio home">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8"/><path d="M9 22V12l7-4 7 4v10h-5v-6h-4v6z"/></svg>
+        <span class="brand-name">Brightwell<span> Home Studio</span></span>
+      </a>
+      <nav class="nav" aria-label="Main">
+        <a href="#services">Services</a>
+        <a href="#process">Process</a>
+        <a href="#projects">Projects</a>
+        <a href="#packages">Packages</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <button class="btn btn-primary btn-sm" type="button" data-open-chat>Book a consultation</button>
     </div>
+  </header>
 
-    <div class="card">
-      <h2>Host-page events (dataLayer + CustomEvent)</h2>
-      <pre id="log"></pre>
-    </div>
+  <main id="main">
+    <!-- Hero -->
+    <section class="hero" id="top">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Interior design &amp; renovation · Since 2011</p>
+          <h1>Homes designed around the way you live.</h1>
+          <p class="lead">From a single kitchen to a whole-home renovation, our designers and project managers take you from first sketch to final walkthrough — on time and on budget.</p>
+          <div class="hero-actions">
+            <button class="btn btn-primary" type="button" data-open-chat>Get a free design consultation</button>
+            <a class="btn btn-ghost" href="#projects">See our work</a>
+          </div>
+          <dl class="stats">
+            <div><dt>Projects delivered</dt><dd>640+</dd></div>
+            <div><dt>Average timeline</dt><dd>9 weeks</dd></div>
+            <div><dt>Workmanship warranty</dt><dd>5 years</dd></div>
+          </dl>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="room">
+            <div class="room-window"></div>
+            <div class="room-lamp"></div>
+            <div class="room-sofa"><span></span></div>
+            <div class="room-plant"></div>
+            <div class="room-rug"></div>
+          </div>
+          <div class="hero-card">
+            <span class="dot-live"></span>
+            <div>
+              <strong>Free consultation</strong>
+              <span>Reply from a designer in minutes</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <div class="card">
-      <h2>How to use</h2>
-      <p>1. Open the chat bubble (bottom right) and send a message → <code>proposaly_conversation</code> appears above
-         and, when the workspace's GA4 is connected, in GA4 → Reports → Realtime with <code>transport: server</code>.<br>
-         2. Give the agent your contact details so it creates a lead → <code>proposaly_lead</code>.</p>
-    </div>
+    <!-- Trust strip -->
+    <section class="trust" aria-label="Highlights">
+      <div class="container trust-row">
+        <span>Licensed &amp; insured</span>
+        <span>Fixed-price proposals</span>
+        <span>In-house project managers</span>
+        <span>3D design previews</span>
+      </div>
+    </section>
+
+    <!-- Services -->
+    <section class="section" id="services">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">What we do</p>
+          <h2>Design and build, under one roof</h2>
+          <p class="section-lead">One team handles design, permits, trades and finishing — so you have a single point of contact from start to finish.</p>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16v10H4zM4 10l2-6h12l2 6M9 14h6"/></svg>
+            <h3>Kitchen renovation</h3>
+            <p>Custom cabinetry, stone worktops and layouts planned around how you cook and gather.</p>
+          </article>
+          <article class="card">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12V5a2 2 0 0 1 4 0M3 12h18v3a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5zM7 20l-1 2M17 20l1 2"/></svg>
+            <h3>Bathrooms</h3>
+            <p>Spa-like bathrooms with walk-in showers, underfloor heating and durable finishes.</p>
+          </article>
+          <article class="card">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13V9a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4M3 13h18v4H3zM5 17v2M19 17v2"/></svg>
+            <h3>Living spaces</h3>
+            <p>Furniture, lighting and storage for living and dining rooms that feel calm and considered.</p>
+          </article>
+          <article class="card">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9H3zM9 20v-6h6v6"/></svg>
+            <h3>Whole-home renovation</h3>
+            <p>Structural changes, open-plan conversions and full refurbishments, managed end to end.</p>
+          </article>
+          <article class="card">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9zM12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>
+            <h3>3D design &amp; planning</h3>
+            <p>Photorealistic renders and floor plans so you can walk through your space before we build.</p>
+          </article>
+          <article class="card">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8v4H8zM6 7h12v14H6zM9 12h6M9 16h4"/></svg>
+            <h3>Styling &amp; sourcing</h3>
+            <p>Curated furniture, fabrics and art, sourced at trade prices and installed by our team.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Process -->
+    <section class="section section-tint" id="process">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">How it works</p>
+          <h2>A clear process, from first call to final walkthrough</h2>
+        </div>
+        <ol class="steps">
+          <li><span class="step-n">01</span><h3>Consultation</h3><p>Tell us about your space, style and budget. We visit, measure and listen.</p></li>
+          <li><span class="step-n">02</span><h3>Design</h3><p>Concepts, 3D renders and a fixed-price proposal you can review line by line.</p></li>
+          <li><span class="step-n">03</span><h3>Build</h3><p>Your project manager coordinates every trade, with weekly progress updates.</p></li>
+          <li><span class="step-n">04</span><h3>Handover</h3><p>Final styling, a snag-free walkthrough and our five-year workmanship warranty.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section class="section" id="projects">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Selected work</p>
+          <h2>Recent projects</h2>
+        </div>
+        <div class="projects">
+          <article class="project">
+            <div class="project-img p1" role="img" aria-label="Warm oak kitchen illustration"></div>
+            <div class="project-body"><h3>Oak &amp; Stone Kitchen</h3><p>Kitchen renovation · 7 weeks</p></div>
+          </article>
+          <article class="project">
+            <div class="project-img p2" role="img" aria-label="Sage green living room illustration"></div>
+            <div class="project-body"><h3>Garden-Facing Living Room</h3><p>Living space · 5 weeks</p></div>
+          </article>
+          <article class="project">
+            <div class="project-img p3" role="img" aria-label="Terracotta bathroom illustration"></div>
+            <div class="project-body"><h3>Terracotta Bathroom</h3><p>Bathroom · 4 weeks</p></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Packages -->
+    <section class="section section-tint" id="packages">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Packages</p>
+          <h2>Pick the level of support that suits you</h2>
+          <p class="section-lead">Every package starts with a free consultation. Final pricing is confirmed in a fixed-price proposal.</p>
+        </div>
+        <div class="plans">
+          <article class="plan">
+            <h3>Design only</h3>
+            <p class="plan-price">from $1,900</p>
+            <ul><li>Measured survey</li><li>Concept &amp; mood boards</li><li>3D renders of one room</li><li>Sourcing list</li></ul>
+            <button class="btn btn-ghost" type="button" data-open-chat>Ask about Design only</button>
+          </article>
+          <article class="plan plan-featured">
+            <span class="plan-badge">Most popular</span>
+            <h3>Design &amp; build</h3>
+            <p class="plan-price">from $18,000</p>
+            <ul><li>Everything in Design only</li><li>Permits &amp; trades</li><li>Dedicated project manager</li><li>5-year workmanship warranty</li></ul>
+            <button class="btn btn-primary" type="button" data-open-chat>Get a proposal</button>
+          </article>
+          <article class="plan">
+            <h3>Whole home</h3>
+            <p class="plan-price">custom quote</p>
+            <ul><li>Multi-room or full renovation</li><li>Structural &amp; layout changes</li><li>Furniture &amp; styling</li><li>Phased scheduling</li></ul>
+            <button class="btn btn-ghost" type="button" data-open-chat>Talk to a designer</button>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section" id="faq">
+      <div class="container narrow">
+        <div class="section-head">
+          <p class="eyebrow">FAQ</p>
+          <h2>Questions we hear often</h2>
+        </div>
+        <details><summary>How much does a kitchen renovation cost?</summary><p>Most of our kitchens fall between $25,000 and $60,000 depending on size, cabinetry and appliances. You get a fixed-price proposal before any work starts.</p></details>
+        <details><summary>How long does a typical project take?</summary><p>Design takes two to three weeks. Build time ranges from four weeks for a bathroom to three months for a whole-home renovation.</p></details>
+        <details><summary>Do you handle permits?</summary><p>Yes. Our project managers prepare and submit all permit applications and coordinate inspections.</p></details>
+        <details><summary>Can I live at home during the renovation?</summary><p>Usually, yes. We plan the work in phases and keep dust-controlled zones so you can stay in your home.</p></details>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+      <div class="container cta-inner">
+        <div>
+          <h2>Ready to start your project?</h2>
+          <p>Chat with our design assistant — it can answer questions, check availability and set up your free consultation.</p>
+        </div>
+        <button class="btn btn-light" type="button" data-open-chat>Start a conversation</button>
+      </div>
+    </section>
   </main>
 
-  <script>
-    (function () {
-      var $ = function (id) { return document.getElementById(id); };
-      var set = function (id, cls, text) { $(id).className = 'dot ' + cls; $(id + '-text').textContent = text; };
-      var log = function (line) {
-        var el = $('log');
-        el.textContent += (el.textContent ? '\n' : '') + new Date().toLocaleTimeString() + '  ' + line;
-        el.scrollTop = el.scrollHeight;
-      };
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <a class="brand brand-footer" href="#top">
+          <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8"/><path d="M9 22V12l7-4 7 4v10h-5v-6h-4v6z"/></svg>
+          <span class="brand-name">Brightwell<span> Home Studio</span></span>
+        </a>
+        <p class="muted">Interior design &amp; renovation.</p>
+      </div>
+      <div>
+        <h4>Studio</h4>
+        <p class="muted">Mon–Fri 9:00–18:00<br>Sat 10:00–14:00</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <p><a href="#services">Services</a><br><a href="#projects">Projects</a><br><a href="#packages">Packages</a></p>
+      </div>
+    </div>
+    <div class="container footer-base">
+      <span>Demo website for product testing — Brightwell Home Studio is a fictional business.</span>
+      <button class="link-btn" type="button" id="dev-toggle">Developer panel</button>
+    </div>
+  </footer>
 
-      // ---- GA status
-      var gaOk = /^G-[A-Z0-9]+$/.test(window.GA_MEASUREMENT_ID);
-      set('st-ga', gaOk ? 'ok' : 'warn', gaOk ? 'Google Analytics: ' + window.GA_MEASUREMENT_ID
-                                              : 'Google Analytics: set GA_MEASUREMENT_ID in index.html');
-      var cookieCheck = function () {
-        var m = /(?:^|; )_ga=([^;]+)/.exec(document.cookie);
-        if (m) { set('st-cookie', 'ok', 'GA client id: ' + m[1].split('.').slice(-2).join('.')); return true; }
-        set('st-cookie', gaOk ? 'warn' : '', gaOk ? 'GA client id: waiting for the _ga cookie…' : 'GA client id: no GA configured');
-        return false;
-      };
-      if (!cookieCheck()) { var t = setInterval(function () { if (cookieCheck()) clearInterval(t); }, 1000); }
+  <!-- Developer panel (hidden by default; ?debug=1 or footer link) -->
+  <aside class="dev" id="dev" hidden aria-label="Developer panel">
+    <div class="dev-head">
+      <strong>Developer panel</strong>
+      <button class="link-btn" type="button" id="dev-close" aria-label="Close developer panel">Close</button>
+    </div>
+    <div class="dev-row"><span class="dot" id="st-ga"></span><span id="st-ga-text">Google Analytics</span></div>
+    <div class="dev-row"><span class="dot" id="st-bot"></span><span id="st-bot-text">Proposaly widget</span></div>
+    <div class="dev-row"><span class="dot" id="st-cookie"></span><span id="st-cookie-text">GA client id</span></div>
+    <p class="dev-label">Host-page events</p>
+    <pre id="log"></pre>
+  </aside>
 
-      // ---- Proposaly widget (loaded only when a token is set)
-      var token = window.PROPOSALY_BOT_ID;
-      if (token && token !== 'PASTE_EMBED_TOKEN') {
-        var w = document.createElement('script');
-        w.src = window.PROPOSALY_WIDGET_SRC;
-        w.setAttribute('data-bot-id', token);
-        w.async = true; w.defer = true;
-        w.onload = function () { set('st-bot', 'ok', 'Proposaly widget: loaded (' + token.slice(0, 6) + '…)'); };
-        w.onerror = function () { set('st-bot', 'warn', 'Proposaly widget: script failed to load — check the CDN URL'); };
-        document.body.appendChild(w);
-        set('st-bot', '', 'Proposaly widget: loading…');
-      } else {
-        set('st-bot', 'warn', 'Proposaly widget: set PROPOSALY_BOT_ID in index.html');
-      }
-
-      // ---- Host-page conversion events: both deliveries the widget makes
-      ['proposaly_conversation', 'proposaly_lead'].forEach(function (name) {
-        window.addEventListener(name, function (e) { log('CustomEvent ' + name + ' ' + JSON.stringify(e.detail)); });
-      });
-      var dl = window.dataLayer = window.dataLayer || [];
-      var origPush = dl.push.bind(dl);
-      dl.push = function (item) {
-        try { if (item && /^proposaly_/.test(item.event || '')) log('dataLayer   ' + item.event + ' ' + JSON.stringify(item)); } catch (e) {}
-        return origPush(item);
-      };
-
-      // ---- Optional: forward the host-page events to GA4 client-side too (GTM-less sites).
-      // Leave OFF while testing Connect GA4, or GA4 counts each event twice (server-side + client-side).
-      // window.addEventListener('proposaly_lead', function (e) { gtag('event', 'proposaly_lead', e.detail); });
-    })();
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>
