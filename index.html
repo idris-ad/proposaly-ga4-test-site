@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Proposaly GA4 test site</title>
+
+  <!-- ===== 1. Fill these two values ===== -->
+  <script>
+    // GA4 → Admin → Data streams → your web stream → Measurement ID (G-XXXXXXXXXX)
+    window.GA_MEASUREMENT_ID = 'G-XXXXXXXXXX';
+    // Proposaly → agent → Channels → Web chat → embed snippet → data-bot-id
+    window.PROPOSALY_BOT_ID = 'PASTE_EMBED_TOKEN';
+    // test-cdn = test environment; use https://cdn.proposaly.io/bot/v1/widget.js for production
+    window.PROPOSALY_WIDGET_SRC = 'https://test-cdn.proposaly.io/bot/v1/widget.js';
+  </script>
+
+  <!-- ===== 2. Google Analytics 4 (gtag) — sets the _ga / _ga_<stream> cookies the widget reads ===== -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    if (/^G-[A-Z0-9]+$/.test(window.GA_MEASUREMENT_ID)) {
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=' + window.GA_MEASUREMENT_ID;
+      document.head.appendChild(s);
+      gtag('js', new Date());
+      gtag('config', window.GA_MEASUREMENT_ID);
+    }
+  </script>
+
+  <style>
+    :root { --bg: #0b1024; --card: #141b36; --text: #e9ecf5; --muted: #9aa1b9; --ok: #4ade80; --warn: #fbbf24; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background: var(--bg); color: var(--text); }
+    main { max-width: 760px; margin: 0 auto; padding: 48px 16px 120px; }
+    h1 { font-size: 28px; margin: 0 0 8px; }
+    p { line-height: 1.5; color: var(--muted); }
+    .card { background: var(--card); border: 1px solid rgba(255,255,255,.12); border-radius: 12px; padding: 16px 18px; margin-top: 16px; }
+    .card h2 { font-size: 15px; margin: 0 0 10px; }
+    .row { display: flex; gap: 10px; align-items: center; font-size: 14px; margin: 6px 0; }
+    .dot { width: 9px; height: 9px; border-radius: 50%; background: #6b7080; flex: none; }
+    .dot.ok { background: var(--ok); } .dot.warn { background: var(--warn); }
+    code { font-family: ui-monospace, Menlo, monospace; font-size: 13px; background: rgba(255,255,255,.08); padding: 2px 6px; border-radius: 4px; }
+    #log { font-family: ui-monospace, Menlo, monospace; font-size: 12px; white-space: pre-wrap; max-height: 320px; overflow: auto; margin: 0; color: var(--text); }
+    #log:empty::before { content: 'No events yet — open the chat and send a message.'; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Proposaly GA4 test site</h1>
+    <p>A plain page that hosts the Proposaly web agent and Google Analytics 4. Use it to test
+       <strong>Connect GA4</strong> (server-side events) and the host-page events
+       <code>proposaly_conversation</code> / <code>proposaly_lead</code>.</p>
+
+    <div class="card">
+      <h2>Status</h2>
+      <div class="row"><span class="dot" id="st-ga"></span><span id="st-ga-text">Google Analytics</span></div>
+      <div class="row"><span class="dot" id="st-bot"></span><span id="st-bot-text">Proposaly widget</span></div>
+      <div class="row"><span class="dot" id="st-cookie"></span><span id="st-cookie-text">GA client id (_ga cookie)</span></div>
+    </div>
+
+    <div class="card">
+      <h2>Host-page events (dataLayer + CustomEvent)</h2>
+      <pre id="log"></pre>
+    </div>
+
+    <div class="card">
+      <h2>How to use</h2>
+      <p>1. Open the chat bubble (bottom right) and send a message → <code>proposaly_conversation</code> appears above
+         and, when the workspace's GA4 is connected, in GA4 → Reports → Realtime with <code>transport: server</code>.<br>
+         2. Give the agent your contact details so it creates a lead → <code>proposaly_lead</code>.</p>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      var $ = function (id) { return document.getElementById(id); };
+      var set = function (id, cls, text) { $(id).className = 'dot ' + cls; $(id + '-text').textContent = text; };
+      var log = function (line) {
+        var el = $('log');
+        el.textContent += (el.textContent ? '\n' : '') + new Date().toLocaleTimeString() + '  ' + line;
+        el.scrollTop = el.scrollHeight;
+      };
+
+      // ---- GA status
+      var gaOk = /^G-[A-Z0-9]+$/.test(window.GA_MEASUREMENT_ID);
+      set('st-ga', gaOk ? 'ok' : 'warn', gaOk ? 'Google Analytics: ' + window.GA_MEASUREMENT_ID
+                                              : 'Google Analytics: set GA_MEASUREMENT_ID in index.html');
+      var cookieCheck = function () {
+        var m = /(?:^|; )_ga=([^;]+)/.exec(document.cookie);
+        if (m) { set('st-cookie', 'ok', 'GA client id: ' + m[1].split('.').slice(-2).join('.')); return true; }
+        set('st-cookie', gaOk ? 'warn' : '', gaOk ? 'GA client id: waiting for the _ga cookie…' : 'GA client id: no GA configured');
+        return false;
+      };
+      if (!cookieCheck()) { var t = setInterval(function () { if (cookieCheck()) clearInterval(t); }, 1000); }
+
+      // ---- Proposaly widget (loaded only when a token is set)
+      var token = window.PROPOSALY_BOT_ID;
+      if (token && token !== 'PASTE_EMBED_TOKEN') {
+        var w = document.createElement('script');
+        w.src = window.PROPOSALY_WIDGET_SRC;
+        w.setAttribute('data-bot-id', token);
+        w.async = true; w.defer = true;
+        w.onload = function () { set('st-bot', 'ok', 'Proposaly widget: loaded (' + token.slice(0, 6) + '…)'); };
+        w.onerror = function () { set('st-bot', 'warn', 'Proposaly widget: script failed to load — check the CDN URL'); };
+        document.body.appendChild(w);
+        set('st-bot', '', 'Proposaly widget: loading…');
+      } else {
+        set('st-bot', 'warn', 'Proposaly widget: set PROPOSALY_BOT_ID in index.html');
+      }
+
+      // ---- Host-page conversion events: both deliveries the widget makes
+      ['proposaly_conversation', 'proposaly_lead'].forEach(function (name) {
+        window.addEventListener(name, function (e) { log('CustomEvent ' + name + ' ' + JSON.stringify(e.detail)); });
+      });
+      var dl = window.dataLayer = window.dataLayer || [];
+      var origPush = dl.push.bind(dl);
+      dl.push = function (item) {
+        try { if (item && /^proposaly_/.test(item.event || '')) log('dataLayer   ' + item.event + ' ' + JSON.stringify(item)); } catch (e) {}
+        return origPush(item);
+      };
+
+      // ---- Optional: forward the host-page events to GA4 client-side too (GTM-less sites).
+      // Leave OFF while testing Connect GA4, or GA4 counts each event twice (server-side + client-side).
+      // window.addEventListener('proposaly_lead', function (e) { gtag('event', 'proposaly_lead', e.detail); });
+    })();
+  </script>
+</body>
+</html>
