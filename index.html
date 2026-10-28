@@ -1,6 +1,16 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <!-- Google tag (gtag.js) — static, exactly as GA4 provides it, so Google's tag checker finds it.
+       Sets the _ga / _ga_86NNW8ZZR0 cookies the Proposaly widget reads for Connect GA4. -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-86NNW8ZZR0"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-86NNW8ZZR0');
+  </script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
@@ -18,19 +28,6 @@
     window.PROPOSALY_WIDGET_SRC = 'https://test-cdn.proposaly.io/bot/v1/widget.js';
   </script>
 
-  <!-- ===== Google Analytics 4 (sets the _ga cookies the widget reads for Connect GA4) ===== -->
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){ dataLayer.push(arguments); }
-    if (/^G-[A-Z0-9]+$/.test(window.GA_MEASUREMENT_ID) && window.GA_MEASUREMENT_ID !== 'G-XXXXXXXXXX') {
-      var gs = document.createElement('script');
-      gs.async = true;
-      gs.src = 'https://www.googletagmanager.com/gtag/js?id=' + window.GA_MEASUREMENT_ID;
-      document.head.appendChild(gs);
-      gtag('js', new Date());
-      gtag('config', window.GA_MEASUREMENT_ID);
-    }
-  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
